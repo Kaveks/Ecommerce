@@ -2,8 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.db import models
-from User.models import Account
-import datetime
+import datetime as dt
 import uuid
 from django.utils import timezone
 from django.conf import settings
@@ -53,7 +52,7 @@ class Address(models.Model):
     town_city = models.CharField(
         _("Town/City/State"), max_length=255, help_text=_('Required '))
     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
-    now = timezone.make_aware(datetime.datetime.now(),
+    now = timezone.make_aware(dt.datetime.now(),
                               timezone.get_default_timezone())
     created_at = models.DateTimeField(_("Created at"), default=now)
     updated_at = models.DateTimeField(_("Updated at"), default=now)
