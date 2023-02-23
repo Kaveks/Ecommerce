@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "Order.apps.OrderConfig",
     "Store.apps.StoreConfig",
     "User.apps.UserConfig",
+    "django_countries",
 ]
 
 MIDDLEWARE = [
