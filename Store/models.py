@@ -20,7 +20,7 @@ class Category(models.Model):
         return '{}'.format(self.name)
 
 
-tag_choices = (
+category_choices = (
     ("S", "Shirt"),
     ("Sp", "Sport wear"),
     ("OW", "Out wear"),
@@ -33,8 +33,7 @@ label_choices = (("P", "primary"), ("S", "secondary"), ("D", "danger"))
 
 class Item(models.Model):
     category = models.ForeignKey(Category, on_delete=models.RESTRICT)
-    tags_color = models.CharField(
-        max_length=255, default=label_choices[2], choices=tag_choices, null=True)
+    sub_category=models.CharField(max_length=4, choices=category_choices, null=True)
     title = models.CharField(max_length=255, verbose_name=_(
         'Title'), help_text=_('Required'), null=True)
     slug = models.SlugField(max_length=255, verbose_name=_('Slug'),
@@ -49,9 +48,9 @@ class Item(models.Model):
     now = timezone.make_aware(datetime.datetime.now(),
                               timezone.get_default_timezone())
     updated = models.DateTimeField(
-        default=now, verbose_name=_('Updated at'), editable=False)
+        default=now, verbose_name=_('Updated at'))
     discount_price = models.FloatField(blank=True, null=True)
-    label = models.CharField(max_length=2,verbose_name=_('Labels'), choices=label_choices, null=True)
+    label = models.CharField(max_length=2,verbose_name=_('Labels'),default=label_choices[2] ,choices=label_choices, null=True)
     description = models.TextField(verbose_name=_(
         'Description'), help_text=_('optional'), blank=True, null=True)
     # users_wishlist = models.ManyToManyField(User, related_name="user_wishlist", blank=True)
@@ -62,26 +61,114 @@ class Item(models.Model):
         ordering = ('-updated',)
 
 
-class Item_Image(models.Model):
+    def get_absolute_url(self):
+        return reverse("Store:product", args=[self.slug])
+
+    def get_add_to_cart_url(self):
+        return reverse("Store:add-to-cart", args=[self.slug])
+
+    def get_remove_from_cart_url(self):
+        return reverse("Store:remove-from-cart", args=[self.slug])
+
+
+
+    def __str__(self):
+        return "{} {}".format(self.title,self.updated)
+
+
+class Item_Image1(models.Model):
     ''' The product image table'''
     item = models.ForeignKey(
-        Item, related_name='item_image', on_delete=models.CASCADE)
+        Item, related_name='image1', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='products/%y/%m', verbose_name=_('Image'),
                               help_text=_("Upload Item's image"), null=True, blank=True)
-    main_pic = models.BooleanField(default=False, verbose_name=_('main image'))
-    other_pic1 = models.BooleanField(default=False, verbose_name=_('Img2'))
-    other_pic2 = models.BooleanField(default=False, verbose_name=_('Img3'))
-    other_pic3 = models.BooleanField(default=False, verbose_name=_('Img4'))
-    other_pic4 = models.BooleanField(default=False, verbose_name=_('Img5'))
+    Show = models.BooleanField(default=True, verbose_name=_('show'))
     now = timezone.make_aware(datetime.datetime.now(),
                               timezone.get_default_timezone())
     updated = models.DateTimeField(
         default=now, verbose_name=_('created at'), editable=False)
 
     class Meta:
-        verbose_name = _('Image')
-        verbose_name_plural = _('Images')
-        ordering=("-updated")
+        verbose_name = _('First Image')
+        verbose_name_plural = _('First Image')
+
+    @property
+    def ImageUrl(self):
+        try:
+            url = self.image.url
+        except:
+            url = ""
+
+        return url
+
+
+class Item_Image2(models.Model):
+    ''' The product image table'''
+    item = models.ForeignKey(
+        Item, related_name='image2', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products/%y/%m', verbose_name=_('Image'),
+                              help_text=_("Upload Item's image"), null=True, blank=True)
+    Show = models.BooleanField(default=False, verbose_name=_('show'))
+    now = timezone.make_aware(datetime.datetime.now(),
+                              timezone.get_default_timezone())
+    updated = models.DateTimeField(
+        default=now, verbose_name=_('created at'), editable=False)
+
+    class Meta:
+        verbose_name = _('Second Image')
+        verbose_name_plural = _('Second Image')
+
+    @property
+    def ImageUrl(self):
+        try:
+            url = self.image.url
+        except:
+            url = ""
+
+        return url
+
+
+class Item_Image3(models.Model):
+    ''' The product image table'''
+    item = models.ForeignKey(
+        Item, related_name='image3', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products/%y/%m', verbose_name=_('Image'),
+                              help_text=_("Upload Item's image"), null=True, blank=True)
+    Show = models.BooleanField(default=False, verbose_name=_('show'))
+    now = timezone.make_aware(datetime.datetime.now(),
+                              timezone.get_default_timezone())
+    updated = models.DateTimeField(
+        default=now, verbose_name=_('created at'), editable=False)
+
+    class Meta:
+        verbose_name = _('Third Image')
+        verbose_name_plural = _('Third Image')
+
+    @property
+    def ImageUrl(self):
+        try:
+            url = self.image.url
+        except:
+            url = ""
+
+        return url
+
+
+class Item_Image4(models.Model):
+    ''' The product image table'''
+    item = models.ForeignKey(
+        Item, related_name='image4', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products/%y/%m', verbose_name=_('Image'),
+                              help_text=_("Upload Item's image"), null=True, blank=True)
+    Show = models.BooleanField(default=False, verbose_name=_('show'))
+    now = timezone.make_aware(datetime.datetime.now(),
+                              timezone.get_default_timezone())
+    updated = models.DateTimeField(
+        default=now, verbose_name=_('created at'), editable=False)
+
+    class Meta:
+        verbose_name = _('Fourth Image')
+        verbose_name_plural = _('Fourth Image')
 
     @property
     def ImageUrl(self):
