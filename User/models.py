@@ -46,10 +46,10 @@ class UserAccountManager(BaseUserManager):
 class Account(AbstractBaseUser, PermissionsMixin):
     # actual login unique identifier,as opposed to django's username
     email = models.EmailField(_('email address'), unique=True,
-                              max_length=255, help_text=_('Required and unique'))
+                              max_length=255, help_text=_('Required '))
     user_name = models.CharField(
-        _('user name'), max_length=200, help_text=_('Required'))
-    las_name = models.CharField(
+        _('user name'), max_length=200, unique=True,help_text=_('Required'))
+    last_name = models.CharField(
         _('last name'), max_length=200, null=True, help_text=_('Required '))
     phone = models.CharField(
         _('phone'), max_length=200, null=True, help_text=_('Required '))

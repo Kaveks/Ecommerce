@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.conf import settings
 from django_countries.fields import CountryField
 from django.utils.translation import gettext_lazy as _  # for any translations
-
+from User.models import Account
 # Create your models here.
 
 
@@ -36,14 +36,15 @@ class Address(models.Model):
     """
 # for security reasons use uuidfield which is a prolonged string hard to guess
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    customer = models.ForeignKey(Customer, related_name=_(
+    customer = models.ForeignKey(Account, related_name=_(
         "customers"), verbose_name=_("Customer"), on_delete=models.CASCADE)
+    full_name=models.CharField(max_length=255,help_text=_("required"),null=True)
     email = models.EmailField(_('email address'),
                               max_length=255, help_text=_('Required '))
     phone = models.CharField(
         _("Phone Number"), max_length=50, help_text=_('Required '))
     zipcode = models.CharField(
-        _("Postcode"), max_length=50, blank=True, help_text=_('Optional '))
+        _("zipcode"), max_length=50, blank=True, help_text=_('Optional '))
     address_line = models.CharField(
         _("Address 1"), max_length=255, blank=True, help_text=_('Optional '))
     address_line2 = models.CharField(
@@ -63,4 +64,4 @@ class Address(models.Model):
         verbose_name_plural = "Customer Addresses"
 
     def __str__(self):
-        return f"{self.customer.name} address"
+        return f"{self.customer.user_name} address"
