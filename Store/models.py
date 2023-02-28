@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 import datetime
 from django.urls import reverse
+from Customer.models import Customer
+from User.models import Account
 # Create your models here.
 
 
@@ -53,7 +55,7 @@ class Item(models.Model):
     label = models.CharField(max_length=2,verbose_name=_('Labels'),default=label_choices[2] ,choices=label_choices, null=True)
     description = models.TextField(verbose_name=_(
         'Description'), help_text=_('optional'), blank=True, null=True)
-    # users_wishlist = models.ManyToManyField(User, related_name="user_wishlist", blank=True)
+    users_wishlist = models.ManyToManyField(Account, related_name="user_wishlist", blank=True)
 
     class Mete:
         verbose_name = _('Item')

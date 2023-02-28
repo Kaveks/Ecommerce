@@ -1,4 +1,4 @@
-{% extends "store/sub_base.html" %}
+{% extends "User/sub_base.html" %}
 {% block title %}Edit Addresses{% endblock %}
 
 {% block sub_content %}
@@ -15,6 +15,8 @@
     {% csrf_token %}
     <label class="small fw-bold">{{ form.full_name.label}}</label>
     {{ form.full_name }}
+    <label class="small fw-bold">{{ form.email.label}}</label>
+    {{ form.email }}
     <label class="small fw-bold">{{ form.phone.label}}</label>
     {{ form.phone }}
     <label class="small fw-bold">{{ form.country.label}}</label>
@@ -25,10 +27,8 @@
     {{ form.address_line2 }}
     <label class="small fw-bold">{{ form.town_city.label}}</label>
     {{ form.town_city }}
-    <label class="small fw-bold">{{ form.postcode.label}}</label>
-    {{ form.postcode }}
-    <label class="small fw-bold">{{ form.delivery_instructions.label}}</label>
-    {{ form.delivery_instructions }}
+    <label class="small fw-bold">{{ form.zipcode.label}}</label>
+    {{ form.zipcode }}
     <button class="btn btn-primary btn-block py-2 mb-4 mt-4 fw-bold w-100" type="button" value="Submit" onclick="submitForm()">
     Add Address
     </button>
