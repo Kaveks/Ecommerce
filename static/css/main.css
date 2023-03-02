@@ -33,12 +33,10 @@ font-family: Lucida Console;
 	height: 97% !important;
 }
 
-#cart-icon{
-	width:30px;
-	height:35px;
-	display: block;
-	margin-left: 0px;
-	margin-top: 15px;
+#btn-category{
+	
+	display: inline-block;
+	
 }
 
 #cart-icon-slide-nav{

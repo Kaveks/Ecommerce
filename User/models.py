@@ -48,7 +48,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True,
                               max_length=255, help_text=_('Required '))
     user_name = models.CharField(
-        _('user name'), max_length=200, unique=True,help_text=_('Required'))
+        _('user name'), max_length=200, unique=True, help_text=_('Required'))
     last_name = models.CharField(
         _('last name'), max_length=200, null=True, help_text=_('Required '))
     phone = models.CharField(

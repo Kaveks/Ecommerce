@@ -2,32 +2,31 @@ from django.shortcuts import render
 
 
 # Create your views here.
-from django.shortcuts import render,redirect,get_object_or_404
-#from Order.views import userOrders
+from django.shortcuts import render, redirect, get_object_or_404
+# from Order.views import userOrders
 
 # Create your views here.
 from .forms import RegistrationForm
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes,force_str
-from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode 
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from User.token import account_activation_token
 from User.models import Account
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-#from orders.views import user_orders
+# from orders.views import user_orders
 
 from .forms import RegistrationForm, UserEditForm
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from User.decorators import authenticate_user,allowed_users,admin_only
+from User.decorators import authenticate_user, allowed_users, admin_only
 from Store.models import Item
 from Customer.models import Address
 from Customer.forms import CustomerAddressForm
-
 
 
 @login_required
@@ -41,33 +40,33 @@ def add_to_wishlist(request, id):
     product = get_object_or_404(Item, id=id)
     if product.users_wishlist.filter(id=request.user.id).exists():
         product.users_wishlist.remove(request.user)
-        messages.success(request, product.title + " has been removed from your WishList")
+        messages.success(request, product.title +
+                         " has been removed from your WishList")
     else:
         product.users_wishlist.add(request.user)
-        messages.success(request, "Added " + product.title + " to your WishList")
+        messages.success(request, "Added " +
+                         product.title + " to your WishList")
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
-
-
-@login_required(login_url = 'User:login')
-@allowed_users(allowed_roles=['Customer'])
+@login_required(login_url='User:login')
+@allowed_users(allowed_group=['Customer'])
 def dashboard(request):
     '''
     order = userOrders(request)
     orders=order['ordered']
     #total=order['total']
     #production=order['production']
-    
+
     #delivered=order['delivered']
     #on_delivery=order['on_delivery']
     context={ 'orders':orders,
-              
-             
+
+
              }
     'production': production,
                'on_delivery':on_delivery,'delivered':delivered '''
-    return render(request,'User/dashboard/dashboard.html')
+    return render(request, 'User/dashboard/dashboard.html')
 
 
 @login_required
@@ -91,6 +90,7 @@ def delete_user(request):
     user.save()
     logout(request)
     return redirect('User:delete_confirmation')
+
 
 @authenticate_user
 def account_register(request):
@@ -117,12 +117,11 @@ def account_register(request):
     return render(request, 'User/registration/register.html', {'form': registerForm})
 
 
-
 def account_activate(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = Account.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, user.DoesNotExist): # type: ignore
+    except (TypeError, ValueError, OverflowError, user.DoesNotExist):  # type: ignore
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
@@ -131,8 +130,6 @@ def account_activate(request, uidb64, token):
         return redirect('User:dashboard')
     else:
         return render(request, 'User/registration/activation_invalid.html')
-
-
 
 
 # Addresses
@@ -156,6 +153,7 @@ def add_address(request):
         address_form = CustomerAddressForm()
     return render(request, "User/dashboard/edit_addresses.html", {"form": address_form})
 
+
 @login_required
 def edit_address(request, id):
     if request.method == "POST":
@@ -169,13 +167,16 @@ def edit_address(request, id):
         address_form = CustomerAddressForm(instance=address)
     return render(request, "User/dashboard/edit_addresses.html", {"form": address_form})
 
+
 @login_required
 def delete_address(request, id):
     address = Address.objects.filter(pk=id, customer=request.user).delete()
     return redirect("User:addresses")
 
+
 @login_required
 def set_default(request, id):
-    Address.objects.filter(customer=request.user, default=True).update(default=False)
+    Address.objects.filter(customer=request.user,
+                           default=True).update(default=False)
     Address.objects.filter(pk=id, customer=request.user).update(default=True)
-    return redirect("User:addresses")   
+    return redirect("User:addresses")

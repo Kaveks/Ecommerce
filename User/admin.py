@@ -26,4 +26,6 @@ class UserAdminConfig(UserAdmin):
         'classes': ('wide',),
         'fields': ('email', 'user_name', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser',),
     }),)
+
+
 admin.site.register(Account, UserAdminConfig)
