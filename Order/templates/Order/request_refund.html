@@ -1,0 +1,29 @@
+{% extends "Order/base.html" %}
+{% block content %}
+  <main>
+    <div class="container">
+
+    <h2>Request Refund</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="alert alert-primary" role="alert">
+                Error: Please try again!
+            </div>
+        {% endif %}
+
+        <label class="small font-weight-bold">{{ form.ref_code.label}}*</label>
+        {{ form.ref_code }}
+        <label class="small font-weight-bold">{{ form.message.label}}*</label>
+        {{ form.message }}
+        <label class="small font-weight-bold">{{ form.email.label}}*</label>
+        {{ form.email }}
+        <button type='submit' class='btn btn-primary'>Submit</button>
+    </form>
+
+    </div>
+  </main>
+
+{% endblock content %}
+
+

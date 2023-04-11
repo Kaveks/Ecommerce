@@ -1,9 +1,8 @@
 {% extends "User/sub_base.html" %}
-{% block title %}Edit Addresses{% endblock %}
-
-
+{% block title %}<title>addresses</title>{% endblock %}
 
 {% block sub_content %}
+{% include 'User/mini_navbar.html'%}
 <h1 class="h2">Your Addresses</h1>
 <div>Manage your <b>addresses</b> and delivery preferences</div>
 <hr />
@@ -38,12 +37,14 @@
           &nbsp;
         </div>
         <div class="card-body small pb-1">
-          <p class="card-text m-0 fw-bold">full_name: {{address.full_name}}</p>
-          <p class="card-text m-0">Email: {{address.email}}</p>
-          <p class="card-text m-0">Phone number: {{address.phone}}</p>
+          <p class="card-text m-0 fw-bold"><u><b style="color:red">{{address.address_type}} information</b></u></p>
+          <p class="card-text m-0 fw-bold">First name: {{address.first_name}}</p>
+          <p class="card-text m-0 fw-bold">Last name: {{address.last_name}}</p>
+          <p class="card-text m-0 fw-bold">Email: {{address.email}}</p>
+          <p class="card-text m-0 fw-bold">Phone number: {{address.phone}}</p>
           <p class="card-text m-0">City: {{address.town_city}}</p>
-          <p class="card-text m-0">Address1: {{address.address_line}}</p>
-          <p class="card-text m-0">Address2: {{address.address_line2}}</p>
+          <p class="card-text m-0">Address: {{address.address}}</p>
+          <p class="card-text m-0">Address2: {{address.address2}}</p>
           <p class="card-text m-0">Zipcode: {{address.zipcode}}</p>
           <div class="pt-5">
             <a href="{% url 'User:edit_address' address.id %}" class="text-decoration-none">Edit</a>

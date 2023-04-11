@@ -51,13 +51,13 @@
 
             <p>{{ item.description }}</p>
 
-            <a href="#" class="btn btn-primary btn-sm my-0 p">
+            <a href="{{item.get_add_to_cart_url}}" class="btn btn-primary btn-sm my-0 p">
               Add
               <i class="fas fa-shopping-cart ml-1"></i>
             </a>
     
-            <a href="#" class="btn btn-danger btn-sm my-0 p "id="btn-category">
-              Rem
+            <a href="{{item.get_remove_from_cart_url}}" class="btn btn-danger btn-sm my-0 p "id="btn-category">
+              Remve
               <i class="fas fa-shopping-cart ml-1"></i>
             </a>
 
