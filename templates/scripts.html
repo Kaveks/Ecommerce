@@ -17,12 +17,13 @@
   $(document).on("contextmenu", "body", function (event) {
     //we won't show the default context menu
     event.preventDefault();
-
+})
     //showing it close to our cursor
     $('#menu').dropdown('toggle').css({
         top: (event.pageY) + "px",
         left: (event.pageX) + "px"
     });
 });
+
 
 </script>

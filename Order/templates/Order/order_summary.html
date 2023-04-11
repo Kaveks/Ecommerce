@@ -1,0 +1,73 @@
+{% extends "Store/base.html" %}
+{% block title%}<title>Order summary</title>{% endblock%}
+{% block content %}
+  <main>
+    <div class="container">
+
+    <div class="table-responsive text-nowrap">
+    <h2><b>Order Summary</b></h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            
+            <th scope="col"><b>Item title</b></th>
+            <th scope="col"><b>Price</b></th>
+            <th scope="col"><b>Quantity</b></th>
+            <th scope="col"><b>Total Amount</b></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for orderitem in order.items.all %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            
+            <td>{{ orderitem.item.title }}</td>
+            <td> $ {{ orderitem.item.price }}</td> 
+            <td>
+                <a href="{% url 'Order:remove-single-item-from-cart' orderitem.item.slug %}"><i class="fas fa-minus mr-2"></i></a>
+                {{ orderitem.quantity }}
+                <a href="{% url 'Order:add-to-cart' orderitem.item.slug %}"><i class="fas fa-plus ml-2"></i></a>
+            </td>
+            <td>
+                {% if orderitem.item.discount_price %}
+                    $ {{ orderitem.get_total_discount_item_price }} 
+    
+                    <span class="badge badge-primary"> Saving $ {{ orderitem.get_amount_saved }}</span>
+                {% else %}
+                    $ {{ orderitem.get_total_item_price }}
+                {% endif %}
+                <a style='color: red;;' href= "{% url 'Order:remove-from-cart' orderitem.item.slug %}">
+                    <i class="fas fa-trash float-right"></i>
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan='3'>Your cart is empty</td>
+            <td colspan="2">
+                <a class='btn btn-primary float-right' href='/'>Continue shopping</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="4"><h5><b>Order Total</b></h5></td>
+            <td colspan="5"><h5><b>$ {{order.get_total}}</b></h5></td>
+        </tr>
+        <tr>
+            <td colspan="5">
+            <a class='btn btn-warning float-right ml-2' href="{% url 'Order:checkout'%}">Proceed to checkout</a>
+            <a class='btn btn-primary float-right' href='/'>Continue shopping</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    </div>
+
+    </div>
+  </main>
+
+{% endblock content %}
+
+

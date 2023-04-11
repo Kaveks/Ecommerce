@@ -26,7 +26,7 @@
 
             <div class="mb-3">
               <a href="">
-                <span class="badge purple mr-1">{{ object.get_category_display }}</span>
+                <span class="badge purple mr-1">{{object.get_sub_category_display }}</span>
               </a>
             </div>
 
@@ -54,11 +54,11 @@
               </button>
 
             </form> {% endcomment %}
-            <a href="#" class="btn btn-primary btn-md my-0 p">
+            <a href="{{object.get_add_to_cart_url}}" class="btn btn-primary btn-md my-0 p">
               Add to cart
               <i class="fas fa-shopping-cart ml-1"></i>
             </a>
-            <a href="#" class="btn btn-danger btn-md my-0 p">
+            <a href="{{object.get_remove_from_cart_url}}" class="btn btn-danger btn-md my-0 p">
               Remove from cart
             </a>
 
@@ -81,9 +81,7 @@
 
           <h4 class="my-4 h4">Additional information</h4>
 
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta odit
-            voluptates,
-            quibusdam officia. Neque quibusdam quas a quis porro? Molestias illo neque eum in laborum.</p>
+          <p>{{object.additional_info}}</p>
 
         </div>
         <!--Grid column-->
@@ -102,7 +100,10 @@
               <div class="card  small_image">
                 {% if image.Show%}
                 <img src="{{image.ImageUrl}}" 
-                class="img-fluid image_thumbnail" alt="">
+                class="img-fluid image_thumbnail card-img-top" alt="">
+                <div class="card-body">
+                  <p class="card-text">{{image.describe_image2}}</p>
+                </div>
                 {% else%}
                 <img class="img-fluid image_thumbnail" style="width: 100%" src="{% static 'image/img/default.png'%}">
                 {% endif%}
@@ -120,7 +121,10 @@
             <div class="card  small_image">
               {% if image.Show%}
               <img src="{{image.ImageUrl}}"
-               class="img-fluid image_thumbnail" alt="">
+               class="img-fluid image_thumbnail card-img-top" alt="">
+               <div class="card-body">
+                <p class="card-text">{{image.describe_image3}}</p>
+              </div>
               {% else%}
               <img class="img-fluid image_thumbnail" style="width: 100%" src="{% static 'image/img/default.png'%}">
               {% endif%}
@@ -135,7 +139,10 @@
             <div class="card  small_image">
               {% if image.Show%}
               <img src="{{image.ImageUrl}}" 
-              class="img-fluid image_thumbnail" alt="">
+              class="img-fluid image_thumbnail card-img-top" alt="">
+              <div class="card-body">
+                <p class="card-text">{{image.describe_image4}}</p>
+              </div>
               {% else%}
               <img class="img-fluid image_thumbnail" style="width: 100%" src="{% static 'image/img/default.png'%}">
               {% endif%}

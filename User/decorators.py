@@ -13,19 +13,19 @@ def authenticate_user(view_func):
     return wrapper_function
 
 
-
-def allowed_users(allowed_roles=[]):
+def allowed_users(allowed_group=[]):
     def decorator(view_func):
         def wrapper_function(request, *args, **kwargs):
             group = None
             if request.user.groups.exists():
                 group = request.user.groups.all()[0].name
-                if group in allowed_roles:
+                if group in allowed_group:
                     return view_func(request, *args, **kwargs)
-            else:
-                return HttpResponse('You are not authorized to view this page')
+                else:
+                    return HttpResponse('You are not authorized to view this page')
         return wrapper_function
     return decorator
+
 
 def admin_only(view_func):
     def wrapper_function(request, *args, **kwargs):
@@ -40,4 +40,4 @@ def admin_only(view_func):
             return view_func(request, *args, **kwargs)
         if group == 'Owner':
             return view_func(request, *args, **kwargs)
-    return wrapper_function 
+    return wrapper_function

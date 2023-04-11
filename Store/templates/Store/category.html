@@ -1,0 +1,109 @@
+
+{% extends 'Store/base.html'%}
+
+{% load static %}
+{% block title%}<title>{{category.name}} </title>{% endblock %}
+
+{% block content %}
+  <main class="mt-0 pt-0">
+    <div class="container-fluid dark-grey-text mt-0">
+
+      <!--Grid row-->
+      <div class="row wow fadeIn">
+
+        <!--Grid column-->
+        {% for item in products %}
+        <!--<div class="col-md-6 mb-1">-->
+        <div class="col-lg-3 col-md-6 mb-4">
+              {% for image in item.image1.all %}
+              {% if image.Show%}
+              <img src="{{image.ImageUrl}}"
+              class="img-fluid  small_image" alt="">
+              {% endif %}
+              {% endfor %}
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <!--<div class="col-md-6 mb-1`">-->
+            <div class="col-lg-3 col-md-6 mb-1">
+          <!--Content-->
+          <div class="p-4">
+
+            <div class="mb-3">
+              <a href="">
+                <span class="badge purple mr-1">{{ item.get_sub_category_display }}</span>
+                <p class="dark-grey-text"><strong>{{ item.title }}</strong></p>
+            </div>
+
+            <p class="lead">
+              {% if item.discount_price %}
+              <span class="mr-1">
+                <del>${{ item.price }}</del>
+              </span>
+              <span>${{ item.discount_price }}</span>
+              {% else %}
+              <span>${{ item.price }}</span>
+              {% endif %}
+            </p>
+
+            <p class="lead font-weight-bold dark-grey-text">Description</p>
+
+            <p>{{ item.description }}</p>
+
+            <a href="{{item.get_add_to_cart_url}}" class="btn btn-primary btn-sm my-0 p">
+              Add
+              <i class="fas fa-shopping-cart ml-1"></i>
+            </a>
+    
+            <a href="{{item.get_remove_from_cart_url}}" class="btn btn-danger btn-sm my-0 p "id="btn-category">
+              Remve
+              <i class="fas fa-shopping-cart ml-1"></i>
+            </a>
+
+          </div>
+          <!--Content-->
+
+        </div>
+        <!--Grid column-->
+        {% endfor %}
+
+      </div>
+      <!--Grid row-->
+
+
+      <!--Pagination-->
+
+      {% if is_paginated %}
+      <nav class="d-flex justify-content-center wow fadeIn">
+        <ul class="pagination pg-blue">
+
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="page-item active">
+            <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+
+</div>
+{% endblock %}

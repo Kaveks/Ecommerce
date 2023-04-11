@@ -19,6 +19,13 @@
 
 
 <style>
+    body,html{
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #74cfbf ! important;
+       
+      }
     .account-form input {
         border: 2px solid #ccc;
         height: calc(2em + .75rem + 2px);
@@ -28,6 +35,7 @@
         border-color: #1497ff;
         box-shadow: none;
     }
+
 </style>
 
 <div class="container-fluid">
@@ -40,7 +48,7 @@
 
                 <form class="account-form px-4 pt-4" method="post" enctype="multipart/form-data">
 
-                    {% if user_form.is_valid and profile_form.is_valid  %}
+                    {% if edit_user_form.is_valid and profile_form.is_valid  %}
                     <div class="alert alert-primary" role="alert">
                         Details successfully updated!
                     </div>
@@ -59,11 +67,14 @@
                     {% endif %}
 
                     {% csrf_token %}
-                    <label class="small font-weight-bold">{{ user_form.email.label}}</label>
-                    {{ user_form.email }}
-                    <label class="small font-weight-bold">{{ user_form.first_name.label}}</label>
-                    {{ user_form.first_name }}
-
+                    <label class="small font-weight-bold">{{ edit_user_form.user_name.label}}</label>
+                    {{ edit_user_form.user_name }}
+                    <label class="small font-weight-bold">{{ edit_user_form.email.label}}</label>
+                    {{ edit_user_form.email }}
+                    <label class="small font-weight-bold">{{ edit_user_form.first_name.label}}</label>
+                    {{ edit_user_form.first_name }}
+                    <label class="small font-weight-bold">{{ edit_user_form.last_name.label}}</label>
+                    {{ edit_user_form.last_name }}
 
 
                     <button class="btn btn-primary btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit"

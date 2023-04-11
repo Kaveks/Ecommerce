@@ -67,6 +67,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                 "Store.context_processors.categories",#drop down data config
             ],
         },
     },
@@ -131,3 +132,9 @@ LOGIN_URL='/User/login/'
 
 #email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# stripe
+from decouple import config
+STRIPE_PUBLIC_KEY = config('STRIPE_TEST_PUBLIC_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_TEST_SECRET_KEY')

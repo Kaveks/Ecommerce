@@ -10,6 +10,8 @@ class RegistrationForm(forms.ModelForm):
         max_length=20, min_length=5, label="Enter UserName")
     email = forms.EmailField(max_length=200, help_text="Required", error_messages={
                              'Required': 'Sorry,please enter a valid email address'})
+    first_name = forms.CharField(
+        max_length=20, min_length=5, label="Enter FirstName")
     password1 = forms.CharField(
         max_length=15, min_length=8, label="Enter Password", widget=forms.PasswordInput)
     password2 = forms.CharField(
@@ -17,7 +19,7 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = ('email', 'user_name')
+        fields = ('email', 'user_name','first_name',)
 
     def clean_username(self):
         user_name = self.cleaned_data['user_name'].lower()
@@ -25,6 +27,14 @@ class RegistrationForm(forms.ModelForm):
         if n.count():
             raise forms.ValidationError("username already exist")
         return user_name
+
+
+    def clean_firstname(self):
+        user_name = self.cleaned_data['user_name'].lower()
+        first_name = self.cleaned_data['first_name'].lower()
+        if user_name == first_name:
+                raise forms.ValidationError('Please change,first name cannot be the same as user name!')
+        return first_name
 
     def clean_password2(self):
         cp = self.cleaned_data
@@ -79,16 +89,18 @@ class UserEditForm(forms.ModelForm):
             attrs={'class': 'form-control mb-3', 'placeholder': 'email', 'id': 'form-email', 'readonly': 'readonly'}))
 
     user_name = forms.CharField(
-        label='Firstname', min_length=4, max_length=50, widget=forms.TextInput(
-            attrs={'class': 'form-control mb-3', 'placeholder': 'Username', 'id': 'form-firstname', 'readonly': 'readonly'}))
+        label='username(username cannot be changed)', min_length=4, max_length=50, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Username', 'id': 'form-username', 'readonly': 'readonly'}))
 
     first_name = forms.CharField(
-        label='Username', min_length=4, max_length=50, widget=forms.TextInput(
-            attrs={'class': 'form-control mb-3', 'placeholder': 'Firstname', 'id': 'form-lastname'}))
-
+        label='firstname', min_length=4, max_length=100, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Firstname', 'id': 'form-firstname'}))
+    last_name = forms.CharField(
+        label='lastname', min_length=4,max_length=100,widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'lastname', 'id': 'form-lastname'}))
     class Meta:
         model = Account
-        fields = ('email', 'user_name', 'first_name',)
+        fields = ('email', 'user_name', 'first_name','last_name')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

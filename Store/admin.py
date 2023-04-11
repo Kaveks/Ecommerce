@@ -1,6 +1,9 @@
 from django.contrib import admin
 from . models import (Item, Category, Item_Image1,
                       Item_Image2, Item_Image3, Item_Image4)
+
+from django.forms import TextInput, Textarea
+from django.db import models
 # Register your models here.
 
 
@@ -39,14 +42,18 @@ class ItemAdmin(admin.ModelAdmin):
     list_filter = ['sub_category']
     # add a search button
     search_fields = ['sub_category']
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size':'30'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':50})},
+    }
     fieldsets = (
         ('Category', {'fields': ('category', 'sub_category',)}),
         ('Main', {'fields': ('title', 'slug', 'price', 'discount_price', 'label')}),
 
         # ('Time',{'fields':('created','updated')}),
         ('More Details', {'fields': ('stocked',
-         'digital', 'updated', 'description')}),
-        # ('Residency',{'fields':(''')})
+         'digital', 'updated', 'description','additional_info')}),
+        ('Wishlist',{'fields':('users_wishlist',)}),
     )
     inlines = [Item_Image1Inline, Item_Image2Inline,
-               Item_Image3Inline, Item_Image4Inline]
+               Item_Image3Inline,Item_Image4Inline]

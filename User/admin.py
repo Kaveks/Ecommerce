@@ -11,12 +11,12 @@ class UserAdminConfig(UserAdmin):
     search_fields = ['user_name', 'email']
     list_filter = ['user_name', 'email', 'is_staff', 'is_superuser']
     fieldsets = (
-        (None, {'fields': ('user_name', 'email',
-         'password', 'created', 'updated', 'last_login')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser',
+        (None, {'fields': ('user_name', 'email', 'password')}),
+        ('Personal Information', {'fields': ('first_name','last_name', 'phone',)}),
+         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser',
                                     'groups')}),
-        # ('Time',{'fields':('created','updated')}),
-        ('Personal Information', {'fields': ('last_name', 'phone',)}),
+           # ('Time',{'fields':('created','updated')}),
+         ('Timelines', {'fields': ('created', 'updated', 'last_login')})
         # ('Residency',{'fields':(''')})
     )
     # formfield_overrides={
@@ -26,4 +26,6 @@ class UserAdminConfig(UserAdmin):
         'classes': ('wide',),
         'fields': ('email', 'user_name', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser',),
     }),)
+
+
 admin.site.register(Account, UserAdminConfig)

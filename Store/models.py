@@ -3,7 +3,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 import datetime
 from django.urls import reverse
-from Customer.models import Customer
 from User.models import Account
 # Create your models here.
 
@@ -16,7 +15,7 @@ class Category(models.Model):
         verbose_name_plural = 'categories'
 
     def get_absolute_url(self):
-        return reverse('store:category', args=[self.slug])
+        return reverse('Store:category', args=[self.slug])
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -52,12 +51,14 @@ class Item(models.Model):
     updated = models.DateTimeField(
         default=now, verbose_name=_('Updated at'))
     discount_price = models.FloatField(blank=True, null=True)
-    label = models.CharField(max_length=2,verbose_name=_('Labels'),default=label_choices[2] ,choices=label_choices, null=True)
+    label = models.CharField(max_length=2,verbose_name=_('Label color'),default=label_choices[2] ,choices=label_choices, null=True)
     description = models.TextField(verbose_name=_(
-        'Description'), help_text=_('optional'), blank=True, null=True)
+        'Description'), help_text=_('optional(briefly say about the product)'), blank=True, null=True)
+    additional_info = models.TextField(verbose_name=_(
+        'Additional Information'), help_text=_('optional(applicable when adding Second-Fourth Images)'), blank=True, null=True)
     users_wishlist = models.ManyToManyField(Account, related_name="user_wishlist", blank=True)
 
-    class Mete:
+    class Meta:
         verbose_name = _('Item')
         verbose_name_plural = _('Items')
         ordering = ('-updated',)
@@ -67,10 +68,13 @@ class Item(models.Model):
         return reverse("Store:product", args=[self.slug])
 
     def get_add_to_cart_url(self):
-        return reverse("Store:add-to-cart", args=[self.slug])
+        return reverse("Order:add-to-cart", args=[self.slug])
+    
+    def get_move_item_to_cart_url(self):
+        return reverse("Order:move-item-to-cart", args=[self.slug])
 
     def get_remove_from_cart_url(self):
-        return reverse("Store:remove-from-cart", args=[self.slug])
+        return reverse("Order:remove-from-cart", args=[self.slug])
 
 
 

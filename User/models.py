@@ -48,7 +48,9 @@ class Account(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True,
                               max_length=255, help_text=_('Required '))
     user_name = models.CharField(
-        _('user name'), max_length=200, unique=True,help_text=_('Required'))
+        _('user name'), max_length=200, unique=True, help_text=_('Required'))
+    first_name = models.CharField(
+        _('first name'), max_length=200, null=True, help_text=_('Required '))
     last_name = models.CharField(
         _('last name'), max_length=200, null=True, help_text=_('Required '))
     phone = models.CharField(
@@ -64,7 +66,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     # manager user data saving
     objects = UserAccountManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['user_name',]  # will popup to be filled by user
+    REQUIRED_FIELDS = ['user_name','first_name',]  # will popup to be filled by user
 
     class Meta:
         verbose_name = 'User Account'

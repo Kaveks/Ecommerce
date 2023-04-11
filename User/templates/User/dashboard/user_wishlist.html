@@ -2,6 +2,7 @@
 {% block title %}<title>Users Wish List</title>{% endblock %}
 
 {% block sub_content %}
+{% include 'User/mini_navbar.html'%}
 <div class="col-12 mx-auto">
   <h1 class="h3">My Wishlist</h1>
   <div>Manage your Wishlist</div>
@@ -17,7 +18,7 @@
       <div class="col-md-2">
         {% for image in product.image1.all  %}
           {% if image.Show %}
-          <img class="img-fluid d-block p-2" width="135px" src="{{ image.ImageUrl }}">
+          <img class="img-fluid d-block p-2 " width="135px" src="{{ image.ImageUrl }}">
           {% endif %}
         {% endfor %}
       </div>
@@ -27,7 +28,8 @@
           <h5 class="card-title">Name: {{product.title}}</h5>
           <p class="card-text">{{product.description}}</p>
           <p class="card-text">Price: $<small class="text-muted">{{product.price}}</small></p>
-          <a type="button" class="btn btn-primary fw500 btn-sm" href="{% url 'User:user_wishlist' product.id %}">Remove from Wishlist</a>
+          <a type="button" class="btn btn-secondary fw500 btn-sm" href="{% url 'User:user_wishlist' product.id %}">Remove from Wishlist</a>
+          <a type="button" class="btn btn-secondary fw500 btn-sm" href="{{product.get_move_item_to_cart_url}}">add to cart</a>
         </div>
       </div>
     </div>
@@ -35,7 +37,7 @@
 
   {% endfor %}
   {% else %}
-  <p class="card-text">No products have been added to your wishlist yet</p>
+  <p class="card-text">No products exists in your wishlist </p>
   {% endif %}
 
 
