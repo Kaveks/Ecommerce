@@ -22,7 +22,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("",include('Store.urls',namespace='Store')),
     path("Order/",include('Order.urls',namespace='Order')),
-   path("User/",include('User.urls',namespace='User')),
+    path("User/",include('User.urls',namespace='User')),
 ]
 if settings.DEBUG:
     urlpatterns +=static (settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

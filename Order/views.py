@@ -16,7 +16,8 @@ from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import (CheckoutForm, CouponForm, RefundForm, PaymentForm)
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse,JsonResponse
+import json as JSON
 
 
 import random  # create random numbers
@@ -164,16 +165,18 @@ class OrderSummaryView(LoginRequiredMixin, View):
                 self.request, f"{self.request.user.user_name}! you do not have an active order")
             return redirect('/')
 
-class CustomerOrderView(LoginRequiredMixin,View):
+
+class CustomerOrderView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
-            order=Order.objects.get(user=self.request.user,ordered=False)
-            context={"order":order}
-            return render(self.request,"User/dashboard/orders.html",context)
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            context = {"order": order}
+            return render(self.request, "User/dashboard/orders.html", context)
         except ObjectDoesNotExist:
             messages.warning(
                 self.request, f"{self.request.user.user_name}  you do not have any ordered items! ")
             return redirect('User:dashboard')
+
 
 def is_valid_checkout_form(values):
     valid = True
@@ -212,7 +215,7 @@ class CheckoutView(View):
 
             if billingAddress_qs.exists():
                 context.update(
-                    {'default_billing_address': shippingAddress_qs[0]}
+                    {'default_billing_address': billingAddress_qs[0]}
                 )
             return render(self.request, 'Order/checkout.html', context)
         except ObjectDoesNotExist:
@@ -234,7 +237,7 @@ class CheckoutView(View):
                         customer=self.request.user,
                         address_type="Shipping",
                         default=True
-                        )
+                    )
                     # check if the user has a default shipping address
                     if address_qs.exists():
                         shippingAddress = address_qs[0]
@@ -281,8 +284,8 @@ class CheckoutView(View):
                         # save the shipping address regardless of presence of default or not
                         order.shippingAddress = shippingAddress
                         order.save()
-                            # set the entered shipping information to default up on check
-                            # of set_default_shipping_address checkbox
+                        # set the entered shipping information to default up on check
+                        # of set_default_shipping_address checkbox
                         set_default_shipping_address = form.cleaned_data.get(
                             'set_default_shipping_address')
                         if set_default_shipping_address:
@@ -308,11 +311,11 @@ class CheckoutView(View):
                     billingAddress.save()
                     order.billingAddress = billingAddress
                     order.save()
-                   
+
                 # if billingAddress is not assigned to be same as shipping address
                 # then user is to type in the  billing information, but first
                 # check if user will use the default billing address if any
-                elif use_default_billing_address :
+                elif use_default_billing_address:
                     print("Using the default billing information")
                     address_qs = Address.objects.filter(
                         customer=self.request.user,
@@ -377,17 +380,18 @@ class CheckoutView(View):
                 payment_option = form.cleaned_data.get("payment_option")
                 # redirect depending on option of payment
                 if payment_option == "S":
-                    return redirect("Order:payment", payment_option="Stripe")
+                    return redirect("Order:payment1", payment_option="Stripe")
                 elif payment_option == "P":
-                    return redirect("Order:payment", payment_option="Paypal")
+                    return redirect("Order:payment2", payment_option="Paypal")
                 elif payment_option == "M":
-                    return redirect("Order:payment", payment_option="Mpesa")
+                    return redirect("Order:payment3", payment_option="Mpesa")
                 else:
                     messages.warning(
                         self.request, "invalid payment option selected")
                     return redirect("Order:checkout")
             except ObjectDoesNotExist:
-                messages.warning(self.request, "You do not have an active order")
+                messages.warning(
+                    self.request, "You do not have an active order")
                 return redirect("Order:order-summary")
         else:
             return HttpResponse('The Checkout form is invalid,Verify please!')
@@ -398,7 +402,7 @@ def create_ref_code():
     return "".join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
 
-class PaymentView(View):
+class StripePaymentView(View):
     def get(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
         # if user does not have a billing address restrict going to payment page
@@ -537,9 +541,39 @@ class PaymentView(View):
                 )
                 return redirect("/")
         messages.warning(self.request, "Invalid data received")
-        return redirect("/Order/payment/Stripe")
+        return redirect("Order:payment1")
 
 
+class PaypalPaymentView(View):
+    
+    def get(self, *args, **kwargs):
+        order=Order.objects.get(user=self.request.user,ordered=False)
+        if order.billingAddress:
+            context = {
+                "order": order,
+                # do not  display coupon form on the payment page
+                "DISPLAY_COUPON_FORM": False,
+            }
+            
+            return render(self.request, "Order/paypal_payment.html", context)
+        else:
+            messages.warning(
+                self.request, "You have not added a billing address")
+            return redirect("Order:checkout")
+
+
+def paypalPaymentComplete(request):
+    data=JSON.loads(request.body)
+    order_id=data['orderId']
+    customer=data['Customer']
+    total=data['total']
+    order=Order.objects.get(user=request.user,ordered=False,id=order_id)
+    if total==order.get_total:
+        order.ordered=True
+        order.save()
+    print('BODY :',data)
+    return JsonResponse('payment Completed!',safe=False)
+            
 class RequestRefundView(View):
     def get(self, *args, **kwargs):
         form = RefundForm()

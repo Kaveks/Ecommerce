@@ -8,6 +8,7 @@ import datetime as dt
 
 from django.db.models.signals import post_save
 from Customer.models import Customer
+from decimal import Decimal
 
 # Create your models here.
 
@@ -19,6 +20,7 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name ='User Profile'
         verbose_name_plural ='User Profiles'
+        ordering=("-user",)
         
 
     def __str__(self):
@@ -109,7 +111,7 @@ class Order(models.Model):
     def get_total(self):
         total = 0
         for order_item in self.items.all():
-           total += float(order_item.get_final_price())
+           total +=float(order_item.get_final_price())
            # subract coupon amount if the user has it
            if self.coupon:
                 total -= self.coupon.amount
@@ -127,9 +129,13 @@ class Payment(models.Model):
     now = timezone.make_aware(dt.datetime.now(),
                               timezone.get_default_timezone())
     timestamp = models.DateTimeField(default=now)
+    class Meta:
+        verbose_name = "Payment"
+        verbose_name_plural = "Payments"
+        ordering = ("-timestamp",)
 
     def __str__(self):
-        return self.user.first_name
+        return f"{self.user.first_name} payment"
 
 
 # create discount codes
@@ -137,6 +143,10 @@ class Coupon(models.Model):
     code = models.CharField(max_length=15)
     amount = models.FloatField()
 
+    class Meta:
+        verbose_name = "Coupon"
+        verbose_name_plural = "Coupons"
+        ordering = ("-code",)
     def __str__(self):
         return self.code
 
@@ -150,8 +160,13 @@ class Refund(models.Model):
                               timezone.get_default_timezone())
     refund_date = models.DateTimeField(default=now)
 
+    class Meta:
+        verbose_name = "Refund"
+        verbose_name_plural = "Refunds"
+        ordering = ("-refund_date",)
+
     def __str__(self):
-        return f"{self.pk}"
+        return f"{self.order.user} refund"
 
 
 

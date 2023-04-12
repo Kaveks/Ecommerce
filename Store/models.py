@@ -12,7 +12,10 @@ class Category(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
 
     class Meta:
-        verbose_name_plural = 'categories'
+        verbose_name="Category"
+        verbose_name_plural = 'Categories'
+        ordering=("-name",)
+        
 
     def get_absolute_url(self):
         return reverse('Store:category', args=[self.slug])
@@ -97,7 +100,7 @@ class Item_Image1(models.Model):
     class Meta:
         verbose_name = _('First Image')
         verbose_name_plural = _('First Image')
-
+        ordering=("-updated",)
     @property
     def ImageUrl(self):
         try:
@@ -123,6 +126,7 @@ class Item_Image2(models.Model):
     class Meta:
         verbose_name = _('Second Image')
         verbose_name_plural = _('Second Image')
+        ordering=("-updated",)
 
     @property
     def ImageUrl(self):
@@ -149,6 +153,7 @@ class Item_Image3(models.Model):
     class Meta:
         verbose_name = _('Third Image')
         verbose_name_plural = _('Third Image')
+        ordering=("-updated",)
 
     @property
     def ImageUrl(self):
@@ -175,6 +180,7 @@ class Item_Image4(models.Model):
     class Meta:
         verbose_name = _('Fourth Image')
         verbose_name_plural = _('Fourth Image')
+        ordering=("-updated",)
 
     @property
     def ImageUrl(self):

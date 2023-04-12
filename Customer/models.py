@@ -62,6 +62,7 @@ class Address(models.Model):
     class Meta:
         verbose_name = " Customer Address"
         verbose_name_plural = "Customer Addresses"
+        ordering=('-created_at',)
 
     def __str__(self):
         return f"{self.customer.first_name} : {self.address_type} address"

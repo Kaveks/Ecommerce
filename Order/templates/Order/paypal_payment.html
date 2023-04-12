@@ -1,0 +1,196 @@
+{% extends "Order/base.html" %}
+{% block title %}<title>paypal payment</title>{% endblock %}
+{% block extra_head %}
+{% endblock extra_head %}
+
+{% block content %}
+
+  <main >
+    <div class="container wow fadeIn">
+      <style>
+        #myform-color{
+          background-color: #74cfbf !important;
+          border-color:white !important;
+          border-width:3px;
+        }
+        .box-element{
+          box-shadow:hsl(0, 0%, 80%) 0 0 16px;
+          background-color: #fff;
+          border-radius: 4px;
+          padding: 10px;
+          width: 80%;
+        }
+      </style>
+
+      <h2 class="my-5 h2 text-center">Paypal Payment</h2>
+
+      <div class="row">
+
+        <div class="col-md-12 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted fw-bold">Your Items </span>
+            <span class="badge badge-danger badge-pill">{{ order.items.count }}</span>
+            </h4>
+            <ul class="list-group mb-3 z-depth-1" id="myform-color">
+            {% for order_item in order.items.all %}
+              <li class="list-group-item d-flex justify-content-between lh-condensed"id="myform-color">
+                  <div >
+                  <h6 class="my-0">{{ order_item.quantity }}  <b style="color:red">x</b>  {{ order_item.item.title}}</h6>
+                  <small  style="color:white">{{ order_item.item.description}}</small>
+                  </div>
+                  <span  style="color:white">${{ order_item.get_final_price }}</span>
+              </li>
+            {% endfor %}
+            {% if order.coupon %}
+            <li class="list-group-item d-flex justify-content-between bg-light">
+                <div class="text-success">
+                <h6 class="my-0">Promo code</h6>
+                <small>{{ order.coupon.code }}</small>
+                </div>
+                <span class="text-success">-${{ order.coupon.amount }}</span>
+            </li>
+            {% endif %}
+            <li class="list-group-item d-flex justify-content-between">
+              <span class="fw-bold">Total (USD)</span>
+              <span class="fw-bold">${{ order.get_total }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-center">
+              <div class="box-element" id="payment-info">
+              <strong class="black-text">Paypal Options</strong>
+              <div id="paypal-button-container"></div>
+              </div>
+            </li>
+          
+          </ul>
+        
+            {% if DISPLAY_COUPON_FORM %}
+            <form class="card p-2" action="{% url 'Order:add-coupon' %}" method="POST" id="myform-color">
+                {% csrf_token %}
+                <div class="input-group">
+                    {{ couponform.code }}
+                    <div class="input-group-append">
+                    <button class="btn btn-secondary btn-md waves-effect m-0" type="submit">Redeem</button>
+                    </div>
+                </div>
+            </form>
+            {% endif %}
+        
+        </div>
+      </div>
+    </div>
+  </main>
+
+<!-- Replace "test" with your own sandbox Business account app client ID -->
+
+<script src="https://www.paypal.com/sdk/js?client-id=ARN40_MjV1SnAsEm1bTG6ODseeP3vuqt_3KsFDpEQsP6NcgWCYU2URbKUT-knXHHElryVEbkC5RJdyc0&currency=USD"></script>
+<!--<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD&intent=capture&enable-funding=venmo" data-sdk-integration-source="integrationbuilder"></script>-->
+
+<script>
+  // csrf token for us to submit Post data in django.
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+  let totalAmount='{{order.get_total}}'
+  let order_id='{{order.id}}'
+  let customer='{{order.user.user_name}}'
+  //$disable-funding=credit
+  function completeOrder(){
+    let url="{% url 'Order:paypal_complete'%}"
+    fetch(url,{
+      method: 'POST',
+      headers: {'Content_type': 'application/json',
+                'X-CSRFToken': csrftoken,},
+      body: JSON.stringify({
+        'orderId': order_id ,
+        'Customer': customer ,
+        'total':totalAmount})
+    })
+  }
+</script>
+
+
+<script>
+  let total='{{order.get_total}}'
+  paypal.Buttons({
+    // button styling
+    style: {
+      color: "gold",
+      shape: "rect",
+      layout: "vertical",
+      height: 40,
+      label:"pay"
+    },
+    // Sets up the transaction when a payment button is clicked
+
+    createOrder: (data, actions) => {
+
+      return actions.order.create({
+
+        purchase_units: [{
+
+          amount: {
+
+            //value: '77.4'' // Can also reference a variable or function
+            value:parseFloat(total).toFixed(2)
+          }
+
+        }]
+
+      });
+
+    },
+
+    // Finalize the transaction after payer approval
+
+    onApprove: (data, actions) => {
+
+      return actions.order.capture().then(function(orderData) {
+
+        // Successful capture! For dev/demo purposes:
+        completeOrder()
+
+        console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+
+        const transaction = orderData.purchase_units[0].payments.captures[0];
+
+        //alert('Transaction ${transaction.status}: ${transaction.id}\n\n'+'completed by:' orderData.payer.name.given_name'|');
+        alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
+        // When ready to go live, remove the alert and show a success message within this page. For example:
+
+        // const element = document.getElementById('paypal-button-container');
+
+        // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+
+        // Or go to another URL:  actions.redirect('thank_you.html');
+
+      });
+
+    }
+
+
+  }).render("#paypal-button-container")
+
+</script>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+
+
+{% endblock extra_scripts %}
+
+
